@@ -45,6 +45,7 @@ CREATE TABLE cadet_forms (
     ncc_personal_number VARCHAR(50),
     ncc_division VARCHAR(20),
     ncc_passout_school VARCHAR(200),
+    ncc_passout_year VARCHAR(10),
     ncc_rank_position VARCHAR(100),
     
     -- SECTION 3: NCCAA DETAILS

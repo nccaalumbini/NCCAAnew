@@ -34,6 +34,7 @@ if ($_POST) {
         $ncc_personal_number = sanitize($_POST['ncc_personal_number'] ?? '');
         $ncc_division = sanitize($_POST['ncc_division'] ?? '');
         $ncc_passout_school = sanitize($_POST['ncc_passout_school'] ?? '');
+        $ncc_passout_year = sanitize($_POST['ncc_passout_year'] ?? '');
         $ncc_rank_position = sanitize($_POST['ncc_rank_position'] ?? '');
 
         // Section 3: NCCAA Details
@@ -43,14 +44,14 @@ if ($_POST) {
         $stmt = $pdo->prepare("
             INSERT INTO cadet_forms (
                 full_name, gender, age, contact_number, email, province, district, address,
-                ncc_batch_number, ncc_personal_number, ncc_division, ncc_passout_school, ncc_rank_position,
+                ncc_batch_number, ncc_personal_number, ncc_division, ncc_passout_school, ncc_passout_year, ncc_rank_position,
                 nccaa_position_applied
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ");
 
         $stmt->execute([
             $full_name, $gender, $age, $contact_number, $email, $province, $district, $address,
-            $ncc_batch_number, $ncc_personal_number, $ncc_division, $ncc_passout_school, $ncc_rank_position,
+            $ncc_batch_number, $ncc_personal_number, $ncc_division, $ncc_passout_school, $ncc_passout_year, $ncc_rank_position,
             $nccaa_position_applied
         ]);
 
@@ -214,6 +215,11 @@ if ($_POST) {
           <div>
             <label class="block text-sm font-medium text-gray-700">NCC दीक्षित विद्यालय</label>
             <input type="text" name="ncc_passout_school" placeholder="जस्तै: त्रिभुवन विश्वविद्यालय" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500">
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700">NCC दीक्षित वर्ष</label>
+            <input type="number" name="ncc_passout_year" min="2000" max="2100" placeholder="जस्तै: 2075" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500">
           </div>
 
           <div>
