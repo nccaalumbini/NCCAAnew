@@ -15,6 +15,24 @@ if (!$form) {
     header('Location: forms.php');
     exit;
 }
+// Prepare safe variables to avoid undefined index warnings
+$full_name = $form['full_name'] ?? '';
+$ncc_batch_number = $form['ncc_batch_number'] ?? '';
+$ncc_personal_number = $form['ncc_personal_number'] ?? '';
+$ncc_division = $form['ncc_division'] ?? '';
+$ncc_rank_position = $form['ncc_rank_position'] ?? '';
+$ncc_passout_school = $form['ncc_passout_school'] ?? '';
+$nccaa_position = $form['nccaa_position_applied'] ?? '';
+$contact_number = $form['contact_number'] ?? '';
+$email = $form['email'] ?? '';
+$address = $form['address'] ?? '';
+$age = $form['age'] ?? '';
+$gender = $form['gender'] ?? '';
+$application_bs_date = $form['application_bs_date'] ?? '';
+if (empty($application_bs_date)) {
+    // fallback to formatted created_at (gregorian) if BS date not provided
+    $application_bs_date = date('Y/m/d', strtotime($form['created_at'] ?? 'now'));
+}
 ?>
 <!DOCTYPE html>
 <html lang="ne">
@@ -164,11 +182,12 @@ if (!$form) {
         </div>
 
         <div class="body-text">
-            <p><strong>विषय:</strong> एन.सि.सि अलुमनाइ एसोसिएशन नेपाल लुम्बिनी प्रदेश ___________ पदमा मनोनयन गरिदिनु हुन।</p>
+            <p><strong>विषय:</strong> एन.सि.सि अलुमनाइ एशोसिएशन नेपाल लुम्बिनी प्रदेश <?= htmlspecialchars($nccaa_position ?: '') ?> पदमा मनोनयन गरिदिनु हुन।</p>
 
             <p>
-                म, राष्ट्रिय सेवा दलको <strong><?= htmlspecialchars($form['ncc_batch_number'] ?: '-') ?></strong> ब्याच, व्यक्तिगत नम्बर <strong><?= htmlspecialchars($form['ncc_personal_number'] ?: '-') ?></strong>,
-                डिभिजन: <strong><?= htmlspecialchars($form['ncc_division'] ?: '-') ?></strong> सोह्र/जन्य तर्फबाट सेवा/स्वयंसेवाको रूपमा सक्रिय रहेकाले, उपयुक्त माने मनोनयनका लागि यो आवेदन पेश गर्दछु।
+                म, राष्ट्रिय सेवा दलको <strong><?= htmlspecialchars($ncc_batch_number ?: '-') ?></strong> औं ब्याच, <strong><?= htmlspecialchars($ncc_division ?: '-') ?></strong> डिभिजनबाट दीक्षित, अनुशासित, ईमानदार, कर्तव्यनिष्ठ, नेतृत्वकारी र राष्ट्रियताको भावना भएको व्यक्ति हुँ।
+                विगत <strong>२०७५</strong> सालदेखि समाजसेवा/स्वयंसेवकको रूपमा सक्रिय रहेकाले म पाल्पा जिल्ला निर्देशक तथा लुम्बिनी प्रदेश निमित्त निर्देशकको जिम्मेवारी सम्हालेको छु र संगठनलाई आवश्यकता परेमा योगदान दिन सधैं तत्पर छु।
+                मैले कुनै पनि राजनीतिक दलसँग आवद्धता नराखेको छु र एन.सि.सि अलुमनाइ एशोसिएशनको विधान अनुसार योग्य र अनुभवी पूर्व एन.सि.सि क्याडेट भएकोले प्रदेश स्तरमा निर्देशक पदका लागि मनोनयनको लागी यो आवेदन स्वइच्छाले पेश गरेको छु।
             </p>
         </div>
 
