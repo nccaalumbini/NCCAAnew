@@ -81,7 +81,6 @@ if ($_POST) {
 
                 <div class="mt-4 flex items-center justify-between">
                     <a href="../home.php" class="text-sm text-gray-600 hover:underline">गृहपृष्ठमा फर्किनुहोस्</a>
-                    <span class="text-sm text-gray-500">डिफल्ट: <strong>admin</strong> / <strong>admin@123</strong></span>
                 </div>
             </div>
         </div>
