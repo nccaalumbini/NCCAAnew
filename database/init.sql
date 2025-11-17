@@ -9,8 +9,7 @@ CREATE TABLE admin_users (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-INSERT INTO admin_users (username, password, email) VALUES 
-('admin', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'admin@nccaa.gov.np');
+
 
 CREATE TABLE notices (
     id INT AUTO_INCREMENT PRIMARY KEY,
