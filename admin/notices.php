@@ -4,6 +4,7 @@ requireLogin();
 
 $success = '';
 $error = '';
+header("Content-Type: text/html; charset=UTF-8");
 
 // Handle form submission
 if ($_POST) {
@@ -67,44 +68,24 @@ if (isset($_GET['edit'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NCCAA Admin - सूचना व्यवस्थापन</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            colors: { nccaa: '#2E7A56' }
-          }
-        }
-      }
-    </script>
+<?php include 'includes/styles.php'; ?>
 </head>
-<body class="min-h-screen bg-gray-50">
-  <header class="bg-white shadow">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex justify-between h-16 items-center">
-        <div class="flex items-center space-x-4">
-          <img src="../public/images/hero.png" alt="NCCAA" class="h-10 w-auto">
-          <div>
-            <h1 class="text-lg font-semibold">NCCAA प्रशासक</h1>
-            <p class="text-xs text-gray-500">लुम्बिनी प्रदेश</p>
-          </div>
-        </div>
+<body class="min-h-screen flex flex-col lg:flex-row bg-gray-50">
+<?php include 'includes/sidebar.php'; ?>
 
-        <nav class="flex items-center space-x-4">
-          <a href="dashboard.php" class="text-sm text-gray-700 hover:text-nccaa">ड्यासबोर्ड</a>
-          <a href="notices.php" class="text-sm text-nccaa font-semibold border-b-2 border-nccaa pb-4">सूचनाहरू</a>
-          <a href="forms.php" class="text-sm text-gray-700 hover:text-nccaa">आवेदनहरू</a>
-          <a href="logout.php" class="text-sm text-gray-700 hover:text-nccaa">लगआउट</a>
-        </nav>
+  <main id="main-content" class="flex-1 ml-64 p-4 lg:p-6 transition-all duration-300">
+    <div class="flex justify-between items-center mb-6">
+      <div>
+        <h1 class="text-2xl font-bold text-gray-800">सूचना व्यवस्थापन</h1>
+        <p class="text-gray-500 text-sm">होमपेजमा प्रदर्शन गर्ने सूचनाहरू व्यवस्थापन गर्नुहोस्</p>
+      </div>
+      <div class="flex items-center space-x-4">
+        <button id="mobile-menu-btn" class="lg:hidden p-2 rounded-md bg-white shadow-card text-gray-700">
+          <i class="fas fa-bars"></i>
+        </button>
       </div>
     </div>
-  </header>
 
-  <main class="max-w-7xl mx-auto p-6">
-    <div class="mb-8">
-      <h2 class="text-2xl font-semibold text-gray-800">सूचना व्यवस्थापन</h2>
-      <p class="text-gray-600 text-sm mt-1">होमपेजमा प्रदर्शन गर्ने सूचनाहरू व्यवस्थापन गर्नुहोस्</p>
-    </div>
 
     <?php if ($success): ?>
     <div class="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
@@ -119,85 +100,114 @@ if (isset($_GET['edit'])) {
     <?php endif; ?>
 
     <!-- Add/Edit Form -->
-    <div class="bg-white rounded-lg shadow p-6 mb-8">
-      <h3 class="text-lg font-semibold text-gray-800 mb-6">
-        <?= $editNotice ? '✏️ सूचना सम्पादन गर्नुहोस्' : '➕ नयाँ सूचना थप्नुहोस्' ?>
-      </h3>
+    <div class="bg-white rounded-lg shadow-card p-6 mb-8 border border-card-border">
+      <div class="flex items-center mb-6">
+        <div class="h-10 w-10 rounded-lg bg-primary-100 flex items-center justify-center mr-4">
+          <i class="fas fa-<?= $editNotice ? 'edit' : 'plus' ?> text-primary-600"></i>
+        </div>
+        <h3 class="text-xl font-semibold text-gray-800">
+          <?= $editNotice ? 'सूचना सम्पादन गर्नुहोस्' : 'नयाँ सूचना थप्नुहोस्' ?>
+        </h3>
+      </div>
       
-      <form method="POST" enctype="multipart/form-data" class="space-y-4">
+      <form method="POST" enctype="multipart/form-data" class="space-y-6">
         <?php if ($editNotice): ?>
         <input type="hidden" name="notice_id" value="<?= $editNotice['id'] ?>">
         <?php endif; ?>
         
         <div>
-          <label class="block text-sm font-medium text-gray-700">शीर्षक *</label>
-          <input type="text" name="title" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-nccaa"
-                 value="<?= $editNotice ? htmlspecialchars($editNotice['title']) : '' ?>" required>
+          <label class="block text-sm font-semibold text-gray-700 mb-2">शीर्षक *</label>
+          <input type="text" name="title" class="form-input w-full"
+                 value="<?= $editNotice ? htmlspecialchars($editNotice['title']) : '' ?>" 
+                 placeholder="सूचनाको शीर्षक लेख्नुहोस्" required>
         </div>
         
         <div>
-          <label class="block text-sm font-medium text-gray-700">सामग्री *</label>
-          <textarea name="content" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-nccaa" 
-                    rows="6" required><?= $editNotice ? htmlspecialchars($editNotice['content']) : '' ?></textarea>
+          <label class="block text-sm font-semibold text-gray-700 mb-2">सामग्री *</label>
+          <textarea name="content" class="form-input w-full" 
+                    rows="6" 
+                    placeholder="सूचनाको विस्तृत विवरण लेख्नुहोस्" required><?= $editNotice ? htmlspecialchars($editNotice['content']) : '' ?></textarea>
         </div>
         
         <div>
-          <label class="block text-sm font-medium text-gray-700">तस्बिर</label>
-          <input type="file" name="image" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md" accept="image/*">
+          <label class="block text-sm font-semibold text-gray-700 mb-2">तसबिर</label>
+          <input type="file" name="image" class="form-input w-full" accept="image/*">
           <?php if ($editNotice && $editNotice['image_path']): ?>
-          <div class="mt-3">
-            <img src="../<?= htmlspecialchars($editNotice['image_path']) ?>" alt="Current Image" class="w-32 h-32 object-cover rounded">
+          <div class="mt-4">
+            <p class="text-sm text-gray-600 mb-2">हालको तसबिर:</p>
+            <img src="../<?= htmlspecialchars($editNotice['image_path']) ?>" alt="Current Image" class="w-32 h-32 object-cover rounded-lg border border-gray-200">
           </div>
           <?php endif; ?>
         </div>
         
-        <div class="flex gap-4 pt-4">
-          <button type="submit" class="px-6 py-2 bg-nccaa text-white rounded-lg font-medium hover:bg-green-700">
+        <div class="flex gap-4 pt-4 border-t border-gray-200">
+          <button type="submit" class="btn-primary inline-flex items-center">
+            <i class="fas fa-<?= $editNotice ? 'save' : 'paper-plane' ?> mr-2"></i>
             <?= $editNotice ? 'अपडेट गर्नुहोस्' : 'प्रकाशित गर्नुहोस्' ?>
           </button>
           <?php if ($editNotice): ?>
-          <a href="notices.php" class="px-6 py-2 bg-gray-300 text-gray-800 rounded-lg font-medium hover:bg-gray-400">रद्द गर्नुहोस्</a>
+          <a href="notices.php" class="inline-flex items-center px-6 py-3 bg-gray-300 text-gray-800 rounded-lg font-medium hover:bg-gray-400 transition-all">
+            <i class="fas fa-times mr-2"></i>रद्द गर्नुहोस्
+          </a>
           <?php endif; ?>
         </div>
       </form>
     </div>
 
     <!-- Notices List -->
-    <div class="bg-white rounded-lg shadow">
-      <div class="px-6 py-4 bg-gray-50 border-b font-medium">प्रकाशित सूचनाहरू</div>
+    <div class="table-container bg-white shadow-card">
+      <div class="px-6 py-4 table-header border-b font-semibold text-gray-800 flex items-center">
+        <i class="fas fa-list mr-2 text-primary-600"></i>प्रकाशित सूचनाहरू
+      </div>
       <div class="overflow-x-auto">
         <table class="min-w-full text-sm">
-          <thead>
-            <tr class="text-left text-gray-600 border-b">
-              <th class="px-6 py-3">शीर्षक</th>
-              <th class="px-6 py-3">सामग्री</th>
-              <th class="px-6 py-3">तस्बिर</th>
-              <th class="px-6 py-3">मिति</th>
-              <th class="px-6 py-3">कार्य</th>
+          <thead class="table-header">
+            <tr class="text-left text-gray-700">
+              <th class="px-6 py-4 font-semibold">शीर्षक</th>
+              <th class="px-6 py-4 font-semibold">सामग्री</th>
+              <th class="px-6 py-4 font-semibold">तसबिर</th>
+              <th class="px-6 py-4 font-semibold">मिति</th>
+              <th class="px-6 py-4 font-semibold">कार्य</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody class="divide-y divide-table-border">
             <?php foreach ($notices as $notice): ?>
-            <tr class="border-t hover:bg-gray-50">
-              <td class="px-6 py-3"><?= htmlspecialchars($notice['title']) ?></td>
-              <td class="px-6 py-3 text-gray-600"><?= htmlspecialchars(substr($notice['content'], 0, 50)) ?>...</td>
-              <td class="px-6 py-3">
+            <tr class="table-row">
+              <td class="px-6 py-4">
+                <div class="font-medium text-gray-900"><?= htmlspecialchars($notice['title']) ?></div>
+              </td>
+              <td class="px-6 py-4 text-gray-600 max-w-xs">
+                <div class="truncate"><?= htmlspecialchars(substr($notice['content'], 0, 80)) ?>...</div>
+              </td>
+              <td class="px-6 py-4">
                 <?php if ($notice['image_path']): ?>
-                <img src="../<?= htmlspecialchars($notice['image_path']) ?>" alt="Notice" class="w-12 h-12 object-cover rounded">
+                <img src="../<?= htmlspecialchars($notice['image_path']) ?>" alt="Notice" class="w-12 h-12 object-cover rounded-lg border border-gray-200">
                 <?php else: ?>
-                <span class="text-gray-400 text-xs">कोनै छैन</span>
+                <div class="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
+                  <i class="fas fa-image text-gray-400"></i>
+                </div>
                 <?php endif; ?>
               </td>
-              <td class="px-6 py-3 text-gray-600"><?= date('Y-m-d', strtotime($notice['created_at'])) ?></td>
-              <td class="px-6 py-3 space-x-2">
-                <a href="notices.php?edit=<?= $notice['id'] ?>" class="inline-block px-3 py-1 bg-blue-500 text-white rounded text-xs hover:bg-blue-600">✏️ सम्पादन</a>
-                <a href="notices.php?delete=<?= $notice['id'] ?>" class="inline-block px-3 py-1 bg-red-500 text-white rounded text-xs hover:bg-red-600" onclick="return confirm('मेटाउन निश्चित?')">🗑️ मेटाउनुहोस्</a>
+              <td class="px-6 py-4 text-gray-600">
+                <div class="text-sm"><?= date('Y-m-d', strtotime($notice['created_at'])) ?></div>
+                <div class="text-xs text-gray-400"><?= date('H:i', strtotime($notice['created_at'])) ?></div>
+              </td>
+              <td class="px-6 py-4 space-x-2">
+                <a href="notices.php?edit=<?= $notice['id'] ?>" class="action-btn inline-flex items-center bg-primary-500 text-white hover:bg-primary-600">
+                  <i class="fas fa-edit mr-1"></i> सम्पादन
+                </a>
+                <a href="notices.php?delete=<?= $notice['id'] ?>" class="action-btn inline-flex items-center bg-red-500 text-white hover:bg-red-600" onclick="return confirm('मेटाउन निश्चित?')">
+                  <i class="fas fa-trash mr-1"></i> मेटाउनुहोस्
+                </a>
               </td>
             </tr>
             <?php endforeach; ?>
             <?php if (empty($notices)): ?>
             <tr>
-              <td colspan="5" class="px-6 py-4 text-center text-gray-500">कुनै सूचना छैन</td>
+              <td colspan="5" class="px-6 py-12 text-center text-gray-500">
+                <i class="fas fa-bullhorn text-4xl mb-4 text-gray-300"></i>
+                <p class="text-lg font-medium">कुनै सूचना छैन</p>
+              </td>
             </tr>
             <?php endif; ?>
           </tbody>
@@ -206,6 +216,6 @@ if (isset($_GET['edit'])) {
     </div>
   </main>
 
-  <script src="../public/js/main.js"></script>
+<?php include 'includes/scripts.php'; ?>
 </body>
 </html>

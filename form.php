@@ -60,7 +60,7 @@ if ($_POST) {
         $error = $e->getMessage();
     }
 }
-?>
+
 ?>
 <!DOCTYPE html>
 <html lang="ne">
@@ -156,7 +156,8 @@ if ($_POST) {
 
           <div>
             <label class="block text-sm font-medium text-gray-700">उमेर *</label>
-            <input type="number" name="age" required min="18" max="100" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-nccaa">
+            <input type="number" name="age" required min="14" max="100" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-nccaa">
+            <p class="text-xs text-gray-500 mt-1">उमेर 14 वर्ष देखि आवेदन दिन सक्नुहुन्छ</p>
           </div>
 
           <div>
@@ -194,22 +195,26 @@ if ($_POST) {
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label class="block text-sm font-medium text-gray-700">NCC ब्याच नं.</label>
-            <input type="text" name="ncc_batch_number" placeholder="जस्तै: 2023-A" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500">
-          </div>
-
-          <div>
-            <label class="block text-sm font-medium text-gray-700">NCC व्य. नं. (Personal Number)</label>
-            <input type="text" name="ncc_personal_number" placeholder="जस्तै: NCC/2023/001" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500">
-          </div>
-
-          <div>
             <label class="block text-sm font-medium text-gray-700">NCC डिभिजन</label>
-            <select name="ncc_division" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500">
+            <select id="nccDivision" name="ncc_division" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500" onchange="onDivisionChange()">
               <option value="">छान्नुहोस्</option>
-              <option value="Senior">Senior</option>
               <option value="Junior">Junior</option>
+              <option value="Senior">Senior</option>
             </select>
+            <p class="text-xs text-gray-500 mt-1">डिभिजन छान्नुहोस्। ब्याच विकल्प तदनुसार उपलब्ध हुनेछ।</p>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700">NCC ब्याच नं.</label>
+            <select id="nccBatch" name="ncc_batch_number" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md bg-white disabled:opacity-70" disabled>
+              <option value="">पहिले डिभिजन छान्नुहोस्</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700">NCC व्यक्तिगत नं.</label>
+            <input type="text" name="ncc_personal_number" placeholder="50930" pattern="[0-9]+" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500">
+            <p class="text-xs text-gray-500 mt-1">नमूना: 50930 (केवल अंक)</p>
           </div>
 
           <div>
@@ -289,7 +294,59 @@ if ($_POST) {
     // Initialize on page load
     document.addEventListener('DOMContentLoaded', function() {
       loadDistricts('लुम्बिनी प्रदेश');
+      // If the form was previously submitted, restore NCC division/batch selection
+      const prevDivision = <?= json_encode($_POST['ncc_division'] ?? '') ?>;
+      const prevBatch = <?= json_encode($_POST['ncc_batch_number'] ?? '') ?>;
+      if (prevDivision) {
+        const divSelect = document.getElementById('nccDivision');
+        divSelect.value = prevDivision;
+        populateBatchOptions(prevDivision, prevBatch);
+      }
     });
+
+    function onDivisionChange() {
+      const division = document.getElementById('nccDivision').value;
+      populateBatchOptions(division);
+    }
+
+    function populateBatchOptions(division, preselect = '') {
+      const batchSelect = document.getElementById('nccBatch');
+      batchSelect.innerHTML = '';
+      if (!division) {
+        batchSelect.disabled = true;
+        const opt = document.createElement('option');
+        opt.value = '';
+        opt.textContent = 'पहिले डिभिजन छान्नुहोस्';
+        batchSelect.appendChild(opt);
+        return;
+      }
+
+      batchSelect.disabled = false;
+      const placeholder = document.createElement('option');
+      placeholder.value = '';
+      placeholder.textContent = 'ब्याच छान्नुहोस्';
+      batchSelect.appendChild(placeholder);
+
+      if (division === 'Junior') {
+        for (let i = 1; i <= 50; i++) {
+          const opt = document.createElement('option');
+          opt.value = `सि.स.${i}`;
+          opt.textContent = `सि.स.${i}`;
+          batchSelect.appendChild(opt);
+        }
+      } else if (division === 'Senior') {
+        for (let i = 1; i <= 19; i++) {
+          const opt = document.createElement('option');
+          opt.value = `सि.स.${i}`;
+          opt.textContent = `सि.स.${i}`;
+          batchSelect.appendChild(opt);
+        }
+      }
+
+      if (preselect) {
+        batchSelect.value = preselect;
+      }
+    }
   </script>
 </body>
 </html>

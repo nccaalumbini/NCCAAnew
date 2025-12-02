@@ -42,44 +42,24 @@ $forms = $stmt->fetchAll();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NCCAA Admin - आवेदन व्यवस्थापन</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            colors: { nccaa: '#2E7A56' }
-          }
-        }
-      }
-    </script>
+<?php include 'includes/styles.php'; ?>
 </head>
-<body class="min-h-screen bg-gray-50">
-  <header class="bg-white shadow">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex justify-between h-16 items-center">
-        <div class="flex items-center space-x-4">
-          <img src="../public/images/hero.png" alt="NCCAA" class="h-10 w-auto">
-          <div>
-            <h1 class="text-lg font-semibold">NCCAA प्रशासक</h1>
-            <p class="text-xs text-gray-500">लुम्बिनी प्रदेश</p>
-          </div>
-        </div>
+<body class="min-h-screen flex flex-col lg:flex-row bg-gray-50">
+<?php include 'includes/sidebar.php'; ?>
 
-        <nav class="flex items-center space-x-4">
-          <a href="dashboard.php" class="text-sm text-gray-700 hover:text-nccaa">ड्यासबोर्ड</a>
-          <a href="notices.php" class="text-sm text-gray-700 hover:text-nccaa">सूचनाहरू</a>
-          <a href="forms.php" class="text-sm text-nccaa font-semibold border-b-2 border-nccaa pb-4">आवेदनहरू</a>
-          <a href="logout.php" class="text-sm text-gray-700 hover:text-nccaa">लगआउट</a>
-        </nav>
+  <main id="main-content" class="flex-1 ml-64 p-4 lg:p-6 transition-all duration-300">
+    <div class="flex justify-between items-center mb-6">
+      <div>
+        <h1 class="text-2xl font-bold text-gray-800">आवेदन व्यवस्थापन</h1>
+        <p class="text-gray-500 text-sm">सबै आवेदनकर्ताहरूको विवरण र व्यवस्थापन</p>
+      </div>
+      <div class="flex items-center space-x-4">
+        <button id="mobile-menu-btn" class="lg:hidden p-2 rounded-md bg-white shadow-card text-gray-700">
+          <i class="fas fa-bars"></i>
+        </button>
       </div>
     </div>
-  </header>
 
-  <main class="max-w-7xl mx-auto p-6">
-    <div class="mb-8">
-      <h2 class="text-2xl font-semibold text-gray-800">आवेदन व्यवस्थापन</h2>
-      <p class="text-gray-600 text-sm mt-1">सबै आवेदनकर्ताहरूको विवरण र व्यवस्थापन</p>
-    </div>
 
     <?php if ($success): ?>
     <div class="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
@@ -94,54 +74,80 @@ $forms = $stmt->fetchAll();
     <?php endif; ?>
 
     <!-- Search & Stats -->
-    <div class="bg-white rounded-lg shadow p-6 mb-6">
+    <div class="bg-white rounded-lg shadow-card p-6 mb-6 border border-card-border">
       <div class="flex items-center justify-between flex-wrap gap-4">
         <form method="GET" class="flex-1 min-w-xs">
-          <input type="text" name="search" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-nccaa" 
-                 placeholder="🔍 नाम, जिल्ला, पद वा फोन नम्बरले खोज्नुहोस्..." 
-                 value="<?= htmlspecialchars($search) ?>">
+          <div class="relative">
+            <input type="text" name="search" class="form-input w-full pl-10" 
+                   placeholder="नाम, जिल्ला, पद वा फोन नम्बरले खोज्नुहोस्..." 
+                   value="<?= htmlspecialchars($search) ?>">
+            <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+          </div>
         </form>
-        <div class="bg-nccaa text-white px-6 py-2 rounded-lg font-semibold">
-          कुल: <?= count($forms) ?>
+        <div class="bg-gradient-to-r from-primary-500 to-primary-600 text-white px-6 py-3 rounded-lg font-semibold shadow-lg">
+          <i class="fas fa-file-alt mr-2"></i>कुल: <?= count($forms) ?>
         </div>
       </div>
     </div>
 
     <!-- Forms Table -->
-    <div class="bg-white rounded-lg shadow overflow-hidden">
+    <div class="table-container bg-white shadow-card">
       <div class="overflow-x-auto">
         <table class="min-w-full text-sm">
-          <thead>
-            <tr class="bg-gray-100 text-left text-gray-600">
-              <th class="px-6 py-3">क्र.सं.</th>
-              <th class="px-6 py-3">नाम</th>
-              <th class="px-6 py-3">जिल्ला</th>
-              <th class="px-6 py-3">NCCAA पद</th>
-              <th class="px-6 py-3">लिंग</th>
-              <th class="px-6 py-3">सम्पर्क</th>
-              <th class="px-6 py-3">आवेदन मिति</th>
-              <th class="px-6 py-3">कार्य</th>
+          <thead class="table-header">
+            <tr class="text-left text-gray-700">
+              <th class="px-6 py-4 font-semibold">क्र.सं.</th>
+              <th class="px-6 py-4 font-semibold">नाम</th>
+              <th class="px-6 py-4 font-semibold">जिल्ला</th>
+              <th class="px-6 py-4 font-semibold">NCCAA पद</th>
+              <th class="px-6 py-4 font-semibold">लिंग</th>
+              <th class="px-6 py-4 font-semibold">सम्पर्क</th>
+              <th class="px-6 py-4 font-semibold">आवेदन मिति</th>
+              <th class="px-6 py-4 font-semibold">कार्य</th>
             </tr>
           </thead>
-          <tbody class="divide-y">
+          <tbody class="divide-y divide-table-border">
             <?php foreach ($forms as $index => $form): ?>
-            <tr class="hover:bg-gray-50">
-              <td class="px-6 py-3 text-gray-600"><?= $index + 1 ?></td>
-              <td class="px-6 py-3 font-medium"><?= htmlspecialchars($form['full_name']) ?></td>
-              <td class="px-6 py-3"><?= htmlspecialchars($form['district']) ?></td>
-              <td class="px-6 py-3"><?= htmlspecialchars($form['nccaa_position_applied'] ?? '-') ?></td>
-              <td class="px-6 py-3"><?= htmlspecialchars($form['gender']) ?></td>
-              <td class="px-6 py-3"><?= htmlspecialchars($form['contact_number']) ?></td>
-              <td class="px-6 py-3 text-gray-600"><?= date('Y-m-d', strtotime($form['created_at'])) ?></td>
-              <td class="px-6 py-3 space-x-2">
-                <a href="view_form.php?id=<?= $form['id'] ?>" class="inline-block px-3 py-1 bg-blue-500 text-white rounded text-xs hover:bg-blue-600">👁️ हेर्नुहोस्</a>
-                <button onclick="if(confirm('मेटाउन निश्चित?')) window.location='forms.php?delete=<?= $form['id'] ?>'" class="inline-block px-3 py-1 bg-red-500 text-white rounded text-xs hover:bg-red-600">🗑️ मेटाउनुहोस्</button>
+            <tr class="table-row">
+              <td class="px-6 py-4 text-gray-600 font-medium"><?= $index + 1 ?></td>
+              <td class="px-6 py-4">
+                <div class="flex items-center">
+                  <div class="h-8 w-8 rounded-full bg-primary-100 text-primary-700 flex items-center justify-center text-sm font-medium mr-3">
+                    <?= mb_substr($form['full_name'] ?? 'A', 0, 1, 'UTF-8') ?>
+                  </div>
+                  <span class="font-medium text-gray-900"><?= htmlspecialchars($form['full_name']) ?></span>
+                </div>
+              </td>
+              <td class="px-6 py-4">
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                  <?= htmlspecialchars($form['district']) ?>
+                </span>
+              </td>
+              <td class="px-6 py-4 text-gray-700"><?= htmlspecialchars($form['nccaa_position_applied'] ?? '-') ?></td>
+              <td class="px-6 py-4">
+                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium <?= $form['gender'] === 'पुरुष' ? 'bg-blue-100 text-blue-800' : 'bg-pink-100 text-pink-800' ?>">
+                  <i class="fas fa-<?= $form['gender'] === 'पुरुष' ? 'male' : 'female' ?> mr-1"></i>
+                  <?= htmlspecialchars($form['gender']) ?>
+                </span>
+              </td>
+              <td class="px-6 py-4 text-gray-700"><?= htmlspecialchars($form['contact_number']) ?></td>
+              <td class="px-6 py-4 text-gray-600"><?= date('Y-m-d', strtotime($form['created_at'])) ?></td>
+              <td class="px-6 py-4 space-x-2">
+                <a href="view_form.php?id=<?= $form['id'] ?>" class="action-btn inline-flex items-center bg-primary-500 text-white hover:bg-primary-600">
+                  <i class="fas fa-eye mr-1"></i> हेर्नुहोस्
+                </a>
+                <button onclick="if(confirm('मेटाउन निश्चित?')) window.location='forms.php?delete=<?= $form['id'] ?>'" class="action-btn inline-flex items-center bg-red-500 text-white hover:bg-red-600">
+                  <i class="fas fa-trash mr-1"></i> मेटाउनुहोस्
+                </button>
               </td>
             </tr>
             <?php endforeach; ?>
             <?php if (empty($forms)): ?>
             <tr>
-              <td colspan="8" class="px-6 py-8 text-center text-gray-500">कुनै आवेदन छैन</td>
+              <td colspan="8" class="px-6 py-12 text-center text-gray-500">
+                <i class="fas fa-inbox text-4xl mb-4 text-gray-300"></i>
+                <p class="text-lg font-medium">कुनै आवेदन छैन</p>
+              </td>
             </tr>
             <?php endif; ?>
           </tbody>
@@ -150,7 +156,7 @@ $forms = $stmt->fetchAll();
     </div>
   </main>
 
-  <script src="../public/js/main.js"></script>
+<?php include 'includes/scripts.php'; ?>
   <script>
     // Real-time search
     document.addEventListener('DOMContentLoaded', function() {
